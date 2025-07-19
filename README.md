@@ -21,25 +21,11 @@ Before running the notebook, you need to download the Universal Sentence Encoder
 1. Go to [Kaggle Universal Sentence Encoder](https://www.kaggle.com/models/google/universal-sentence-encoder/tensorFlow1/lite/2)
 2. Download the **TensorFlow1 Lite v2** model
 3. Extract the downloaded files
-4. Upload the entire model folder to your Google Drive at: `/MyDrive/ndev-task-tracker/universal-sentence-encoder-tensorflow1-lite-v2`
-
-The model folder structure should look like:
-```
-/content/drive/MyDrive/ndev-task-tracker/universal-sentence-encoder-tensorflow1-lite-v2/
-├── saved_model.pb
-├── variables/
-│   ├── variables.data-00000-of-00001
-│   └── variables.index
-└── assets/
-    └── universal_encoder_8k_spm.model
-```
-
-### 2. Required Dependencies
+4. Upload the entire model folder to your Google Drive at: `ndev-task-tracker/universal-sentence-encoder-tensorflow1-lite-v2`
 
 The notebook uses the following Python packages (automatically installed in Colab):
 - TensorFlow
 - TensorFlow Hub
-- TensorFlow Text
 - NumPy
 - SentencePiece
 - Scikit-learn
@@ -55,6 +41,7 @@ drive.mount('/content/drive')
 
 ### Step 2: Environment Setup
 Execute the environment configuration cell to set up TensorFlow for legacy Keras compatibility.
+this is required only if you want to convert this model for later use in web app using tensorflowjs[wizard]
 
 ### Step 3: Load Models and Dependencies
 Run the "Import & Model load" section to:
@@ -67,6 +54,7 @@ The notebook includes predefined datasets for each category. You can:
 - Review the existing data in the "Data Preparation" section
 - **Adjust the datasets** by modifying the lists in the data preparation cell if needed
 - Add or remove examples from any category to improve model performance
+- adjust `random_state` and check the y_val, its better if y_val distributed evenly 
 
 ### Step 5: Train the Model
 Execute the "Training" section to:
@@ -92,13 +80,8 @@ After training, download the saved model file:
 
 ## Model Conversion for Web Deployment
 
-After downloading the model, you can convert it to TensorFlow.js format for web deployment:
-
-### Prerequisites for Conversion
-Install TensorFlow.js converter on your local machine:
-```bash
-pip install tensorflowjs
-```
+After downloading the model, you can convert it to TensorFlow.js format for web deployment
+for more read the official docs [here](https://github.com/tensorflow/tfjs/tree/master/tfjs-converter#regular-conversion-script-tensorflowjs_converter)
 
 ### Convert the Model
 Run the following command to convert the Keras model to TensorFlow.js format:
@@ -109,31 +92,6 @@ tensorflowjs_converter --input_format=keras saved_model.h5 classifier
 This will create a `classifier` directory containing:
 - `model.json`: Model architecture
 - `*.bin` files: Model weights
-
-## Usage Example
-
-After training, you can classify new text:
-
-```python
-new_sentences = [
-    "writing code", 
-    "eating a little pizza for a minute and wrote a code", 
-    "catchup with mr x"
-]
-
-# Get predictions
-new_input = to_sparse(new_sentences)
-new_embeddings = embed_fn(**new_input)['default']
-predictions = model.predict(new_embeddings)
-
-# Get predicted classes
-predicted_labels = predictions.argmax(axis=1)
-predicted_class_names = [class_names[label] for label in predicted_labels]
-confidences = predictions.max(axis=1)
-
-print("Predictions:", predicted_class_names)
-print("Confidences:", confidences)
-```
 
 ## Model Architecture
 
@@ -151,18 +109,7 @@ print("Confidences:", confidences)
 3. **Validation**: Test with diverse examples to ensure good generalization
 4. **Hyperparameter Tuning**: Experiment with different architectures, learning rates, and epochs
 
-## Troubleshooting
-
-### Common Issues:
-
-1. **Model Path Error**: Ensure the Universal Sentence Encoder model is uploaded to the correct Google Drive path
-2. **Memory Issues**: If you encounter memory problems, try reducing the dataset size or using a smaller batch size
-3. **Poor Accuracy**: Consider adding more training examples or adjusting the model architecture
-
-### File Paths:
-- Model path in Colab: `/content/drive/MyDrive/ndev-task-tracker/universal-sentence-encoder-tensorflow1-lite-v2`
-- Saved model output: `saved_model.h5` (in Colab's current directory)
-
 ## License
 
-This project is intended for educational and development purposes. Please ensure you comply with the Universal Sentence Encoder model's license terms when using it.
+This project is licensed under the [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0).
+See the [LICENSE](./LICENSE) file for details.
